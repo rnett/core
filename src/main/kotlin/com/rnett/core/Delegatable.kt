@@ -9,11 +9,11 @@ interface StringDelegatable<V> {
 
     class Delegate<V>(val ref: StringDelegatable<V>, val key: String? = null) : ReadWriteProperty<Any?, V> {
         override fun getValue(thisRef: Any?, property: KProperty<*>): V {
-            return ref.get(key ?: property.name)
+            return ref.getForDelegate(key ?: property.name)
         }
 
         override fun setValue(thisRef: Any?, property: KProperty<*>, value: V) {
-            ref.set(key ?: property.name, value)
+            ref.setForDelegate(key ?: property.name, value)
         }
     }
 
@@ -25,11 +25,11 @@ interface DelegatableString : StringDelegatable<String> {
 
     class GenericDelegate<T>(val key: String? = null, val ref: DelegatableString, val fromString: (String?) -> T, val toString: (T) -> String = { it.toString() }) : ReadWriteProperty<Any?, T> {
         override fun getValue(thisRef: Any?, property: KProperty<*>): T {
-            return fromString(ref.get(key ?: property.name))
+            return fromString(ref.getForDelegate(key ?: property.name))
         }
 
         override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
-            ref.set(key ?: property.name, toString(value))
+            ref.setForDelegate(key ?: property.name, toString(value))
         }
     }
 
