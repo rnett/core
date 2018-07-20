@@ -36,8 +36,8 @@ interface DelegatableString : StringDelegatable<String> {
     fun <T> by(fromString: (String?) -> T, toString: (T) -> String = { it.toString() }) = GenericDelegate<T>(null, this, fromString, toString)
     fun <T> by(key: String?, fromString: (String?) -> T, toString: (T) -> String = { it.toString() }) = GenericDelegate<T>(key, this, fromString, toString)
 
-    fun byInt(key: String? = null) = by(key, { it?.toInt() ?: 0 })
+    fun byInt(key: String? = null) = by<Int>(key, { it?.toInt() ?: 0 })
     val byInt get() = byInt()
-    fun byDouble(key: String? = null) = by(key, { it?.toDouble() ?: 0 })
-    val byDouble get() = byInt()
+    fun byDouble(key: String? = null) = by<Double>(key, { it?.toDouble() ?: 0.0 })
+    val byDouble get() = byDouble()
 }
