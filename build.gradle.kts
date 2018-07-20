@@ -18,8 +18,8 @@ repositories {
 dependencies {
     compile(kotlin("stdlib-jdk8"))
     testCompile("junit", "junit", "4.12")
-    compile("com.github.kizitonwose.time:time:1.0.1")
-    compile("com.github.salomonbrys.kotson:kotson:2.5.0")
+    implementation("com.github.kizitonwose.time:time:1.0.1")
+    implementation("com.github.salomonbrys.kotson:kotson:2.5.0")
 }
 
 configure<JavaPluginConvention> {
