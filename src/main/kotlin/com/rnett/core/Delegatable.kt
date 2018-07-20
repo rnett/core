@@ -4,8 +4,8 @@ import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 interface StringDelegatable<V> {
-    fun get(key: String): V
-    fun set(key: String, value: V)
+    fun getForDelegate(key: String): V
+    fun setForDelegate(key: String, value: V)
 
     class Delegate<V>(val ref: StringDelegatable<V>, val key: String? = null) : ReadWriteProperty<Any?, V> {
         override fun getValue(thisRef: Any?, property: KProperty<*>): V {
