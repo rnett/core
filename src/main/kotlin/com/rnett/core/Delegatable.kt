@@ -38,6 +38,7 @@ interface DelegatableString : StringDelegatable<String> {
 
     fun byInt(key: String? = null) = by<Int>(key, { it?.toInt() ?: 0 })
     val byInt get() = byInt()
+
     fun byDouble(key: String? = null) = by<Double>(key, { it?.toDouble() ?: 0.0 })
     val byDouble get() = byDouble()
 }

@@ -3,11 +3,13 @@ package com.rnett.core
 import com.kizitonwose.time.Interval
 import java.util.*
 
-class Cache<K, V>(val timeout: Long = -1, val default: (K) -> V) : Map<K, V> {
+class Cache<K, V>(val timeout: Long = -1, val sizeLimit: Int = -1, val default: (K) -> V) : Map<K, V> {
 
-    constructor(timeout: Interval<*>, default: (K) -> V) : this(timeout.inMilliseconds.longValue, default)
+    constructor(timeout: Interval<*>, sizeLimit: Int, default: (K) -> V) : this(timeout.inMilliseconds.longValue, sizeLimit, default)
 
     private val map = mutableMapOf<K, Pair<Long, V>>()
+
+    private val byAge = LinkedList<K>()
 
     override val size: Int
         get() = map.size
@@ -29,11 +31,17 @@ class Cache<K, V>(val timeout: Long = -1, val default: (K) -> V) : Map<K, V> {
         if (map.containsKey(key) && map[key]!!.isValid())
             return map[key]!!.second
 
-        map[key] = Pair(Calendar.getInstance().timeInMillis, default(key))
+        if (sizeLimit > 0 && size >= sizeLimit - 1) {
+            if (byAge.isNotEmpty())
+                map.remove(byAge.pop())
+        }
+
+        put(key, default(key))
         return map[key]!!.second
     }
 
     fun put(key: K, value: V) {
+        byAge.add(key)
         map[key] = Pair(Calendar.getInstance().timeInMillis, value)
     }
 
