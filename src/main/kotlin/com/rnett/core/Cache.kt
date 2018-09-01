@@ -5,7 +5,7 @@ import java.util.*
 
 class Cache<K, V>(val timeout: Long = -1, val sizeLimit: Int = -1, val default: (K) -> V) : Map<K, V> {
 
-    constructor(timeout: Interval<*>, sizeLimit: Int, default: (K) -> V) : this(timeout.inMilliseconds.longValue, sizeLimit, default)
+    constructor(timeout: Interval<*>, sizeLimit: Int = -1, default: (K) -> V) : this(timeout.inMilliseconds.longValue, sizeLimit, default)
 
     private val map = mutableMapOf<K, Pair<Long, V>>()
 
