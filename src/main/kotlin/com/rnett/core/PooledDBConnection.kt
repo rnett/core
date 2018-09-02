@@ -1,15 +1,12 @@
 package com.rnett.core
 
-import org.postgresql.ds.PGPoolingDataSource
-import org.postgresql.jdbc3.Jdbc3PoolingDataSource
+import org.apache.commons.dbcp.BasicDataSource
 
+//TODO JNDI from jetty?
 object PooledDBConnection {
-    fun connect(server: String, user: String, password: String, database: String): PGPoolingDataSource {
-        val ds = Jdbc3PoolingDataSource()
-        ds.serverName = server
-        ds.user = user
-        ds.password = password
-        ds.databaseName = database
-        return ds
+    fun connect(connectionURL: String) = {
+        val ds = BasicDataSource()
+        ds.url = connectionURL
+        ds
     }
 }
