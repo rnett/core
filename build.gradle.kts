@@ -20,6 +20,7 @@ dependencies {
     testCompile("junit", "junit", "4.12")
     implementation("com.github.kizitonwose.time:time:1.0.1")
     implementation("com.github.salomonbrys.kotson:kotson:2.5.0")
+    implementation("postgresql:postgresql:9.1-901.jdbc3")
 }
 
 configure<JavaPluginConvention> {
