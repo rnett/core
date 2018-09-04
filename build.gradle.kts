@@ -37,6 +37,8 @@ val sourcesJar by tasks.creating(Jar::class) {
     from(java.sourceSets["main"].allSource)
 }
 
+artifacts.add("archives", sourcesJar)
+
 publishing {
     publications {
         create("default", MavenPublication::class.java) {
