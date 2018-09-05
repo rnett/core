@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.rnett"
-version = "1.0-SNAPSHOT"
+version = "1.2.1"
 
 repositories {
     mavenCentral()
@@ -20,8 +20,8 @@ dependencies {
     testCompile("junit", "junit", "4.12")
     implementation("com.github.kizitonwose.time:time:1.0.1")
     implementation("com.github.salomonbrys.kotson:kotson:2.5.0")
-    implementation("org.postgresql:postgresql:42.2.5")
-    implementation("commons-dbcp:commons-dbcp:1.4")
+    compile("org.postgresql:postgresql:42.2.5")
+    compile("commons-dbcp:commons-dbcp:1.4")
 }
 
 configure<JavaPluginConvention> {
