@@ -36,11 +36,13 @@ class Cache<K, V>(val timeout: Long = -1, val sizeLimit: Int = -1, val default: 
                 map.remove(byAge.pop())
         }
 
-        put(key, default(key))
-        return map[key]!!.second
+        val v = default(key)
+        put(key, v)
+        return v
     }
 
     fun put(key: K, value: V) {
+        byAge.remove(key)
         byAge.add(key)
         map[key] = Pair(Calendar.getInstance().timeInMillis, value)
     }
