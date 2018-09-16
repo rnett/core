@@ -2,13 +2,13 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     java
-    kotlin("jvm") version "1.2.51"
+    kotlin("jvm") version "1.2.70"
     `maven-publish`
     maven
 }
 
 group = "com.rnett"
-version = "1.2.1"
+version = "1.3.0"
 
 repositories {
     mavenCentral()
@@ -22,6 +22,7 @@ dependencies {
     implementation("com.github.salomonbrys.kotson:kotson:2.5.0")
     compile("org.postgresql:postgresql:42.2.5")
     compile("commons-dbcp:commons-dbcp:1.4")
+    compile(kotlin("reflect"))
 }
 
 configure<JavaPluginConvention> {

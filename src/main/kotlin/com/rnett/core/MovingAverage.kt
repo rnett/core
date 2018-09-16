@@ -2,10 +2,12 @@ package com.rnett.core
 
 class MovingAverage() : Number() {
 
-    private var currentAverage = 0.0
+    private var currentTotal = 0.0
     private var currentCount = 0.0
 
-    val average get() = currentAverage
+    val average get() = currentTotal / currentCount
+    val count get() = currentCount
+    val total get() = currentTotal
 
     operator fun invoke() = average
 
@@ -13,43 +15,80 @@ class MovingAverage() : Number() {
         add(values)
     }
 
-    fun add(value: Number) {
-        currentAverage = (currentAverage * currentCount + value.toDouble()) / (++currentCount)
+    constructor(vararg values: Number) : this() {
+        add(values.toList())
+    }
+
+    infix fun add(value: Number) {
+        currentTotal += value.toDouble()
+        currentCount += 1
     }
 
     fun add(vararg values: Number) {
         values.forEach { add(it) }
     }
 
-    fun add(values: Collection<Number>) {
+    infix fun add(values: Iterable<Number>) {
         values.forEach { add(it.toDouble()) }
     }
 
+    /**
+     * Adds [value].second [value].first times
+     */
+    infix fun add(value: Pair<Number, Number>) {
+        currentTotal += value.first.toDouble() * value.second.toDouble()
+        currentCount += value.first.toDouble()
+    }
+
+    /**
+     * Adds [value].second [value].first times
+     */
+    fun add(vararg values: Pair<Number, Number>) {
+        values.forEach(::add)
+    }
+
+    @JvmName("addIterablePairs")
+    infix fun add(values: Iterable<Pair<Number, Number>>) {
+        values.forEach { add(it) }
+    }
 
     operator fun plus(value: Number): MovingAverage {
         add(value); return this
     }
 
-    operator fun plus(value: Collection<out Number>): MovingAverage {
+    operator fun plus(value: Pair<Number, Number>): MovingAverage {
+        add(value); return this
+    }
+
+    operator fun plus(value: Iterable<Number>): MovingAverage {
+        add(value); return this
+    }
+
+    @JvmName("plusIterablePairs")
+    operator fun plus(value: Iterable<Pair<Number, Number>>): MovingAverage {
         add(value); return this
     }
 
 
-    override fun toByte(): Byte = currentAverage.toByte()
+    operator fun component1() = average
+    operator fun component2() = count
+    operator fun component3() = total
 
-    override fun toChar(): Char = currentAverage.toChar()
+    override fun toByte(): Byte = average.toByte()
 
-    override fun toDouble(): Double = currentAverage.toDouble()
+    override fun toChar(): Char = average.toChar()
 
-    override fun toFloat(): Float = currentAverage.toFloat()
+    override fun toDouble(): Double = average.toDouble()
 
-    override fun toInt(): Int = currentAverage.toInt()
+    override fun toFloat(): Float = average.toFloat()
 
-    override fun toLong(): Long = currentAverage.toLong()
+    override fun toInt(): Int = average.toInt()
 
-    override fun toShort(): Short = currentAverage.toShort()
+    override fun toLong(): Long = average.toLong()
+
+    override fun toShort(): Short = average.toShort()
 
     override fun toString(): String {
-        return currentAverage.toString()
+        return average.toString()
     }
 }

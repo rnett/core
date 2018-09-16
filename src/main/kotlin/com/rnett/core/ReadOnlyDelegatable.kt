@@ -1,41 +1,28 @@
 package com.rnett.core
 
-import kotlin.properties.ReadWriteProperty
+import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-interface DelegatableBy<K, V> : ReadWriteProperty<Any?, V> {
+interface ReadOnlyDelegatableBy<K, V> : ReadOnlyProperty<Any?, V> {
     fun getForDelegate(key: K): V
-    fun setForDelegate(key: K, value: V)
 
     fun fromProperty(prop: KProperty<*>): K = fromPropertyName(prop.name)
     fun fromPropertyName(propertyName: String): K
 
-    class Delegate<K, V>(private val ref: DelegatableBy<K, V>, private val key: K? = null) : ReadWriteProperty<Any?, V> {
+    class Delegate<K, V>(private val ref: ReadOnlyDelegatableBy<K, V>, private val key: K? = null) : ReadOnlyProperty<Any?, V> {
         override fun getValue(thisRef: Any?, property: KProperty<*>): V {
             return ref.getForDelegate(key ?: ref.fromProperty(property))
         }
-
-        override fun setValue(thisRef: Any?, property: KProperty<*>, value: V) {
-            ref.setForDelegate(key ?: ref.fromProperty(property), value)
-        }
     }
 
-    class GenericDelegate<K, V, R>(private val key: K? = null, private val ref: DelegatableBy<K, V>, val fromValue: (V?) -> R, val toValue: (R) -> V) : ReadWriteProperty<Any?, R> {
+    class GenericDelegate<K, V, R>(private val key: K? = null, private val ref: ReadOnlyDelegatableBy<K, V>, val fromValue: (V?) -> R, val toValue: (R) -> V) : ReadOnlyProperty<Any?, R> {
         override fun getValue(thisRef: Any?, property: KProperty<*>): R {
             return fromValue(ref.getForDelegate(key ?: ref.fromProperty(property)))
-        }
-
-        override fun setValue(thisRef: Any?, property: KProperty<*>, value: R) {
-            ref.setForDelegate(key ?: ref.fromProperty(property), toValue(value))
         }
     }
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): V {
         return getForDelegate(fromProperty(property))
-    }
-
-    override fun setValue(thisRef: Any?, property: KProperty<*>, value: V) {
-        setForDelegate(fromProperty(property), value)
     }
 
     fun by(key: K? = null) = Delegate(this, key)
@@ -46,9 +33,9 @@ interface DelegatableBy<K, V> : ReadWriteProperty<Any?, V> {
 
 }
 
-interface DelegatableByString<V> : DelegatableBy<String, V>
+interface ReadOnlyDelegatableByString<V> : ReadOnlyDelegatableBy<String, V>
 
-interface DelegatableStringToString : DelegatableByString<String> {
+interface ReadOnlyDelegatableStringToString : ReadOnlyDelegatableByString<String> {
 
     fun <R> by(fromString: (String?) -> R) = by(null, fromString)
     fun <R> by(key: String?, fromString: (String?) -> R) = by(key, fromString, { it.toString() })
@@ -73,12 +60,9 @@ interface DelegatableStringToString : DelegatableByString<String> {
 
     fun byShort(key: String? = null) = by(key) { it?.toShort() ?: 0.toShort() }
     val byShort get() = byShort()
-
-    fun byNumber(key: String? = null) = by(key) { it?.toDouble() ?: 0.0 }
-    val byNumber get() = byNumber()
 }
 
-interface DelegatableStringToNumber : DelegatableByString<Number> {
+interface ReadOnlyDelegatableStringToNumber : ReadOnlyDelegatableByString<Number> {
 
     fun byInt(key: String? = null) = by(key, { it?.toInt() ?: 0 }, { it })
     val byInt get() = byInt()
@@ -101,4 +85,3 @@ interface DelegatableStringToNumber : DelegatableByString<Number> {
     fun byShort(key: String? = null) = by(key, { it?.toShort() ?: 0.toShort() }, { it })
     val byShort get() = byShort()
 }
-
