@@ -46,7 +46,9 @@ interface DelegatableBy<K, V> : ReadWriteProperty<Any?, V> {
 
 }
 
-interface DelegatableByString<V> : DelegatableBy<String, V>
+interface DelegatableByString<V> : DelegatableBy<String, V> {
+    override fun fromPropertyName(propertyName: String): String = propertyName
+}
 
 interface DelegatableStringToString : DelegatableByString<String> {
 
