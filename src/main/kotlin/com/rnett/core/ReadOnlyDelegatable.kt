@@ -33,7 +33,9 @@ interface ReadOnlyDelegatableBy<K, V> : ReadOnlyProperty<Any?, V> {
 
 }
 
-interface ReadOnlyDelegatableByString<V> : ReadOnlyDelegatableBy<String, V>
+interface ReadOnlyDelegatableByString<V> : ReadOnlyDelegatableBy<String, V> {
+    override fun fromPropertyName(propertyName: String): String = propertyName
+}
 
 interface ReadOnlyDelegatableStringToString : ReadOnlyDelegatableByString<String> {
 
