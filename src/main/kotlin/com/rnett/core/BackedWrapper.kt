@@ -21,7 +21,7 @@ abstract class GenericBackedWrapper<KeyType, BackingResult, Type>(private val ba
 
     internal fun getBackingValue() = toBacking(backingValue)
 
-    operator fun plusAssign(value: Type) {
+    open operator fun plusAssign(value: Type) {
         this.backingValue = value
     }
 }
