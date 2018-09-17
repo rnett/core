@@ -22,5 +22,5 @@ class ReadOnlyFieldBacking<V>(val field: KProperty<V>) : ReadOnlyProperty<Any?, 
 }
 
 
-inline fun <V> backing(field: KMutableProperty<V>) = FieldBacking(field)
-inline fun <V> backing(field: KProperty<V>) = ReadOnlyFieldBacking(field)
+inline fun <V> backingVar(field: KMutableProperty<V>) = FieldBacking(field)
+inline fun <V> backingVal(field: KProperty<V>) = ReadOnlyFieldBacking(field)
