@@ -26,7 +26,7 @@ abstract class BackedWrapper<KeyType, BackingResult, Type>(private val backing: 
     }
 }
 
-class DirectBackedWrapper<KeyType, BackingResultType>(backing: DelegatableBy<KeyType, BackingResultType>? = null, key: KeyType?, val ifNull: BackingResultType)
+open class DirectBackedWrapper<KeyType, BackingResultType>(backing: DelegatableBy<KeyType, BackingResultType>? = null, key: KeyType?, val ifNull: BackingResultType)
     : BackedWrapper<KeyType, BackingResultType, BackingResultType>(backing, key) {
     override fun fromBacking(backing: BackingResultType?): BackingResultType = backing ?: ifNull
 
