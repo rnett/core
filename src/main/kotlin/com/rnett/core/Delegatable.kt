@@ -35,21 +35,21 @@ interface DelegatableBy<K, V> : ReadWriteProperty<Any?, V> {
 
     class BackedDelegate<KeyType, BackingResult, Type>(private val key: KeyType? = null, private val ref: DelegatableBy<KeyType, BackingResult>,
                                                        val fromBacking: (BackingResult?) -> Type, val toBacking: (Type) -> BackingResult)
-        : ReadWriteProperty<Any?, BackedWrapper<KeyType, BackingResult, Type>> {
+        : ReadWriteProperty<Any?, StandardBackedWrapper<KeyType, BackingResult, Type>> {
 
-        override fun getValue(thisRef: Any?, property: KProperty<*>): BackedWrapper<KeyType, BackingResult, Type> {
-            return BackedWrapper(ref, key ?: ref.fromProperty(property), fromBacking, toBacking)
+        override fun getValue(thisRef: Any?, property: KProperty<*>): StandardBackedWrapper<KeyType, BackingResult, Type> {
+            return StandardBackedWrapper(ref, key ?: ref.fromProperty(property), fromBacking, toBacking)
         }
 
-        override fun setValue(thisRef: Any?, property: KProperty<*>, value: BackedWrapper<KeyType, BackingResult, Type>) {
-            if (key != value.key) throw IllegalArgumentException("Keys of field and BackedWrapper don't match")
+        override fun setValue(thisRef: Any?, property: KProperty<*>, value: StandardBackedWrapper<KeyType, BackingResult, Type>) {
+            if (key != value.key && value.key != null) throw IllegalArgumentException("Keys of field and BackedWrapper don't match")
 
             ref.setForDelegate(key ?: ref.fromProperty(property), toBacking(value.value))
         }
     }
 
-    class BackedGenericDelegate<BackingType : GenericBackedWrapper<KeyType, BackingResult, Type>, KeyType, BackingResult, Type>(private val key: KeyType? = null, private val ref: DelegatableBy<KeyType, BackingResult>,
-                                                                                                                                val makeBacking: MakeBacking<BackingType, KeyType, BackingResult>)
+    class BackedGenericDelegate<BackingType : BackedWrapper<KeyType, BackingResult, Type>, KeyType, BackingResult, Type>(private val key: KeyType? = null, private val ref: DelegatableBy<KeyType, BackingResult>,
+                                                                                                                         val makeBacking: MakeBacking<BackingType, KeyType, BackingResult>)
         : ReadWriteProperty<Any?, BackingType> {
 
         override fun getValue(thisRef: Any?, property: KProperty<*>): BackingType {
@@ -80,8 +80,8 @@ interface DelegatableBy<K, V> : ReadWriteProperty<Any?, V> {
     fun <R> byBacked(fromValue: (V?) -> R, toValue: (R) -> V) = BackedDelegate(null, this, fromValue, toValue)
     fun <R> byBacked(key: K?, fromValue: (V?) -> R, toValue: (R) -> V) = BackedDelegate(key, this, fromValue, toValue)
 
-    fun <Backing : GenericBackedWrapper<K, V, R>, R> byBacked(makeBacking: MakeBacking<Backing, K, V>) = BackedGenericDelegate(null, this, makeBacking)
-    fun <Backing : GenericBackedWrapper<K, V, R>, R> byBacked(key: K?, makeBacking: MakeBacking<Backing, K, V>) = BackedGenericDelegate(key, this, makeBacking)
+    fun <Backing : BackedWrapper<K, V, R>, R> byBacked(makeBacking: MakeBacking<Backing, K, V>) = BackedGenericDelegate(null, this, makeBacking)
+    fun <Backing : BackedWrapper<K, V, R>, R> byBacked(key: K?, makeBacking: MakeBacking<Backing, K, V>) = BackedGenericDelegate(key, this, makeBacking)
 }
 
 interface DelegatableByString<V> : DelegatableBy<String, V> {

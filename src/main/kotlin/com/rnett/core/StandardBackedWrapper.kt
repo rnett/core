@@ -1,6 +1,6 @@
 package com.rnett.core
 
-abstract class GenericBackedWrapper<KeyType, BackingResult, Type>(private val backing: DelegatableBy<KeyType, BackingResult>? = null, internal val key: KeyType?) {
+abstract class BackedWrapper<KeyType, BackingResult, Type>(private val backing: DelegatableBy<KeyType, BackingResult>? = null, internal val key: KeyType?) {
 
     abstract fun fromBacking(backing: BackingResult?): Type
     abstract fun toBacking(value: Type): BackingResult
@@ -26,9 +26,16 @@ abstract class GenericBackedWrapper<KeyType, BackingResult, Type>(private val ba
     }
 }
 
-class BackedWrapper<KeyType, BackingResult, Type>(backing: DelegatableBy<KeyType, BackingResult>? = null, key: KeyType,
-                                                  internal val fromBackingFun: (BackingResult?) -> Type, internal val toBackingFun: (Type) -> BackingResult)
-    : GenericBackedWrapper<KeyType, BackingResult, Type>(backing, key) {
+class DirectBackedWrapper<KeyType, BackingResultType>(backing: DelegatableBy<KeyType, BackingResultType>? = null, key: KeyType?, val ifNull: BackingResultType)
+    : BackedWrapper<KeyType, BackingResultType, BackingResultType>(backing, key) {
+    override fun fromBacking(backing: BackingResultType?): BackingResultType = backing ?: ifNull
+
+    override fun toBacking(value: BackingResultType): BackingResultType = value
+}
+
+class StandardBackedWrapper<KeyType, BackingResult, Type>(backing: DelegatableBy<KeyType, BackingResult>? = null, key: KeyType,
+                                                          internal val fromBackingFun: (BackingResult?) -> Type, internal val toBackingFun: (Type) -> BackingResult)
+    : BackedWrapper<KeyType, BackingResult, Type>(backing, key) {
 
     override fun fromBacking(backing: BackingResult?): Type = fromBackingFun(backing)
     override fun toBacking(value: Type): BackingResult = toBackingFun(value)
