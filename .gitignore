@@ -42,6 +42,4 @@ build/
 .idea/compiler.xml
 .idea/inspectionProfiles/profiles_settings.xml
 .idea/.namekotlin\
-kotlin\
-ZkillTest.kt
-GroupTest.kt
+

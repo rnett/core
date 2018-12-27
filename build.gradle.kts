@@ -2,13 +2,13 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     java
-    kotlin("jvm") version "1.2.70"
+    kotlin("jvm") version "1.3.11"
     `maven-publish`
     maven
 }
 
 group = "com.rnett"
-version = "1.3.1"
+version = "1.3.7"
 
 repositories {
     mavenCentral()
