@@ -23,7 +23,7 @@ class AdvancedStringBuilder(var prepend: String = "", var append: String = "", v
     }
 
     fun appendln(vararg values: Any, pure: Boolean = false) = values.forEach {
-        append(it, pure)
+        appendln(it, pure)
     }
 
     @ExperimentalContracts
