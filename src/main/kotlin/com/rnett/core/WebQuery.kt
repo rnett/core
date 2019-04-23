@@ -112,6 +112,8 @@ class WebQuery(val concurrency: Int = 100,
         }.awaitAll()
     }
 
+    suspend inline fun <reified T : Any, I, R> makeQueries(inputs: Map<I, String>, crossinline transform: (I, T) -> R): List<R?> = makeQueries(inputs.toList(), transform)
+
     suspend inline fun <reified T : Any, I, R> makeQueries(inputs: List<I>, toUrl: (I) -> String, crossinline transform: (I, T) -> R): List<R?> =
             makeQueries(inputs.associateWith { toUrl(it) }.toList(), transform)
 
