@@ -102,6 +102,19 @@ class WebQuery(val concurrency: Int = 100,
         }.awaitAll()
     }
 
+    suspend inline fun <reified T : Any, I, R> makeQueries(inputs: List<Pair<I, String>>, crossinline transform: (I, T) -> R): List<R?> {
+        val launchpad = Launchpad<R?>(concurrency, concurrencyStart, concurrencyStep, coroutineContext)
+
+        return inputs.map { (key, url) ->
+            launchpad {
+                makeJsonQuery<T>(url)?.let { transform(key, it) }
+            }
+        }.awaitAll()
+    }
+
+    suspend inline fun <reified T : Any, I, R> makeQueries(inputs: List<I>, toUrl: (I) -> String, crossinline transform: (I, T) -> R): List<R?> =
+            makeQueries(inputs.associateWith { toUrl(it) }.toList(), transform)
+
     suspend inline fun <reified T : Any> makeJsonQuery(url: String) =
             makeQuery(url)?.let { Gson().fromJson<T>(it) }
 
